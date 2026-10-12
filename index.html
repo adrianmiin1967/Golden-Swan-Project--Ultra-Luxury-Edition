@@ -3,13 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=Golden_Swan_Project_Website_Complete.html">
+<meta name="theme-color" content="#080808">
 <title>Golden Swan Project – Ultra Luxury Edition</title>
+<style>
+html,body{margin:0;padding:0;background:#080808;min-height:100%;width:100%}
+#golden-swan-site{display:block;width:100%;border:0;min-height:100vh;background:#080808}
+</style>
 </head>
-<body style="background:#080808;color:#d9b75c;text-align:center;padding:4rem;font-family:Georgia,serif">
-<h1>Golden Swan Project – Ultra Luxury Edition</h1>
-<p>Opening the luxury rental collection…</p>
-<p><a style="color:#f3d36b" href="Golden_Swan_Project_Website_Complete.html">Open website</a></p>
-<script>location.replace("Golden_Swan_Project_Website_Complete.html");</script>
+<body>
+<iframe id="golden-swan-site" title="Golden Swan Project – Ultra Luxury Edition" src="Golden_Swan_Project_Website_Complete.html"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('golden-swan-site');
+  const endpoint='https://formspree.io/f/xnpjzgya';
+  function resizeFrame(){
+    try{
+      const doc=frame.contentDocument;
+      if(!doc) return;
+      frame.style.height=Math.max(doc.documentElement.scrollHeight,doc.body?doc.body.scrollHeight:0,window.innerHeight)+'px';
+    }catch(error){frame.style.height='100vh';}
+  }
+  function attachForm(){
+    try{
+      const doc=frame.contentDocument;
+      if(!doc) return;
+      const form=doc.getElementById('enquiry');
+      if(!form || form.dataset.formspreeBridge==='ready'){resizeFrame();return;}
+      form.dataset.formspreeBridge='ready';
+      const status=doc.createElement('p');
+      status.setAttribute('role','status');
+      status.style.cssText='margin:12px 0;padding:12px;border:1px solid #d9b75c;color:#f3d36b;background:#080808;font:inherit;display:none;';
+      form.insertAdjacentElement('afterend',status);
+      form.addEventListener('submit',async function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        const data=new FormData(form);
+        const value=(key)=>String(data.get(key)||'').trim();
+        const subject='Golden Swan Project – Rental Request';
+        const body=['Golden Swan Project – Rental Request','','Name: '+value('name'),'Email: '+value('email'),'Occasion: '+value('occasion'),'Date: '+value('date'),'','Details:',value('details')].join('\n');
+        const mailto='mailto:adrianmiin@yahoo.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+        const button=form.querySelector('button[type="submit"],input[type="submit"],button:not([type])');
+        const oldLabel=button?(button.tagName==='INPUT'?button.value:button.textContent):'';
+        if(button){button.disabled=true;if(button.tagName==='INPUT')button.value='Sending…';else button.textContent='Sending…';}
+        status.style.display='block';
+        status.textContent='Sending your enquiry…';
+        try{
+          const response=await fetch(endpoint,{method:'POST',body:data,headers:{'Accept':'application/json'}});
+          if(!response.ok) throw new Error('Form submission failed');
+          status.textContent='Thank you. Your rental enquiry has been sent successfully. We will contact you by email.';
+          form.reset();
+        }catch(error){
+          status.textContent='Automatic sending is unavailable right now. Your prepared email will open as a backup; please press Send in your email app.';
+          window.location.href=mailto;
+        }finally{
+          if(button){button.disabled=false;if(button.tagName==='INPUT')button.value=oldLabel;else button.textContent=oldLabel;}
+          resizeFrame();
+        }
+      },true);
+      resizeFrame();
+    }catch(error){}
+  }
+  frame.addEventListener('load',function(){attachForm();resizeFrame();});
+  window.addEventListener('resize',resizeFrame);
+})();
+</script>
 </body>
 </html>
